@@ -1,0 +1,19 @@
+select kitap.kitapadi,tur.turadi from kitap,tur
+where kitap.turno=tur.turno
+and tur.turadi in('Hikaye','Fıkra');
+--Kitabın türü Hikaye ve Fıkra olanları listeleyiniz.
+
+select ogrenci.ogrno,ograd,ogrsoyad,kitapadi
+from ogrenci,islem,kitap
+where sinif='10/b' or sinif='10/c'
+and ogrenci.ogrno=islem.ogrno
+and islem.kitapno=kitap.kitapno;
+--10/b veya 10/c sınıfındaki öğrencilerin adını,soyadını,numarasını ve okuduğu kitap sayısını listeleyin.
+
+select distinct ogrenci,ogradi,ogrsoyadi,kitapadi
+from ogrenci,islem,kitap,tur
+where ogrenci.ogrno=islem.ogrno
+and islem.kitapno=kitap.kitapno
+and kitap.turno=tur.turno
+and tur.turadi='Roman';
+--Roman türünde kitap okuyan öğrencilerin adını,soyadını ve okuduğu kitabın adını listeleyin.

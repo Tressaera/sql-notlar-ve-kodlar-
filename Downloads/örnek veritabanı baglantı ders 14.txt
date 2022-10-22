@@ -1,0 +1,558 @@
+https://www.yazilimkodlama.com/sql-server-2/c-sql-baglantisi-select-insert-update-delete-class-kullanarak/
+https://www.yazilimkodlama.com/programlama/c-sql-server-veritabani-baglantisi-select-insert-update-delete/
+
+CLASS VERİTABANI BAĞLANTISI ÖRNEKLER:
+
+
+
+C# Sql Bağlantısı Select Insert Update Delete (Class Kullanarak)
+2 ay önce4 Yorum
+Bu yazımızda C# ile SQL bağlantısı ve kayıt listeleme, ekleme, güncelleme ve silme işlemlerini gerçekleştiren basit bir uygulama oluşturacağız.
+
+
+ 
+Daha önceki C# Sql bağlantısı örneğimizden farklı olarak bu uygulamamızda Class yapısının nasıl kullanıldığı ile ilgili bilgiler bulacaksınız.
+
+Ayrıca Form tasarımı, veritabanı ve tablo oluşturma işlemlerini detaylı olarak anlatmaya çalışacağım.
+
+Örneğimize başlayalım.
+
+Adım 1: İlk olarak Visual Studio programında Create New Project diyerek yeni projemizi açalım.
+
+
+Adım 2: Burada
+
+
+Windown Forms App (.Net Framework) seçerek yeni bir Wİndows Form projesi açacağız. Projenizi isimlendirerek Create Butonuna basın.
+
+Adım 3: Uygulama başarıyla oluşturulduktan sonra, aşağıda gösterildiği gibi Toolbox bölümünden kontroller eklemeye başlayacağız ve kontroller için uygun isimlendirmeleri (Name) sağlayacağız.
+
+
+Name özelliklerini aşağıdaki gibi ayarlıyoruz.
+
+
+DataGridView için Özellikler penceresinden Selection Mode özelliğini FullRowSelect yapıyoruz.
+
+Yine DataGridView için aşağıdaki özellikleri kapatıyoruz.
+
+
+Adım 4:
+
+Daha sonra SQL Server’da bir veritabanı ve tablo oluşturacağız. ‘Microsoft SQL Server Management Studio’yu açın ‘Database‘ klasörüne sağ tıklayın ‘New Database‘ tıklayın.
+
+Aşağıdaki ‘Yeni Veritabanı’ iletişim kutusu, ‘dbPersonel‘ olarak yeni bir veritabanı adı girin ve Tamam’ı tıklayın.
+
+
+Adım 5: Sql Server programında New Query penceresinde aşağıdaki kodları yazarak tablo ve gerekli alanları oluşturalım.
+
+ 
+CREATE TABLE [dbo].[Personel](
+	[Id] [int] NOT NULL PRIMARY KEY,
+	[AdSoyad] [nvarchar](50) NULL,
+	[Yas] [int] NULL,
+	[Telefon] [nvarchar](50) NULL,
+	[Cinsiyet] [nvarchar](10) NULL
+)
+ 
+Veritabanında Personel Tablosu üzerinde sağ tıklayarak Design tıklarsanız aşağıdaki gibi tablonuzu göreceksiniz. Eğer tablonuz sorunsuz oluştuğu halde görünmüyorsa Yenile düğmesine basarak tablonuzu görüntüleyebilirsiniz.
+
+
+Adım 6: Artık Form üzerine geçerek veritabanı bağlantısı kurma ve CRUD (Create, Retrieve, Update, and Delete) işlemlerine geçebiliriz.
+
+Windows uygulamasından veritabanına nasıl bağlanılır?
+
+
+ 
+Aşağıda gösterildiği gibi basit adımlarla Windows uygulamasında kolayca veritabanı bağlantısı ekleyeceğiz,
+
+Tools menüsüne gidin ‘Connect to Database‘ ı tıklayın.
+
+
+Adım 7: Data Source olarak Microsoft SQL Server seçerek devam edelim.
+
+
+Varsayılan olarak, veri kaynağı Microsoft SQL Server (SQL İstemcisi) olarak seçilir.
+
+Server Name alnına varsayılan olarak ‘.’ veya bilgisayar adınızı seçebilirsiniz. . Database Name bölümünde açılır menüden ‘dbPersonel‘ olarak veritabanımızı seçin. Bu işlemlerden sonra Test Connection butonu ile bağlantınızı test edebilirsiniz.
+
+
+Adım 8: Veritabanı bağlantısı oluşturulduktan sonra aşağıda gösterildiği gibi bağlantı detaylarını göreceksiniz,
+
+
+Adım 9: Vertabanı bağlantısı üzerinde sağ tıklayıp Properties diyerek aşağıdaki görseldeki gibi Connection String bölümünü bağlantımız için kopyalayalım.
+
+
+Adım 10: Bu adımda App.config dosyamıza veritabanı bağlantısı için bir önceki adımda kopyaladığımız bağlantı cümlemizi ekleyeceğiz.
+
+
+Adım 11: Proje üzerinde sağ tıklayarak Add-Class seçelim.
+
+
+Gelen ekranda Class ismini Personel olarak ayarlayarak sınıfımızı ekleyelim.
+
+
+Adım 12:
+
+Şimdi Personel Class’ ımızı ve Property lerini oluşturalım.
+
+ 
+    public class Personel
+    {
+        int _id;
+        string _adSoyad;
+        string _yas;
+        string _telefon;
+        string _cinsiyet;
+ 
+        public int Id { get => _id; set => _id = value; }
+        public string AdSoyad { get => _adSoyad; set => _adSoyad = value; }
+        public string Yas { get => _yas; set => _yas = value; }
+        public string Telefon { get => _telefon; set => _telefon = value; }
+        public string Cinsiyet { get => _cinsiyet; set => _cinsiyet = value; }
+    }
+ 
+ConfigurationManager kullanarak App.config dosyamızda tanımladığımız bağlantı cümlemizi ekleyelim.
+
+ 
+private static string myConn = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
+ 
+Adım 13: Personel Ekleme
+
+ 
+public bool InsertPersonel(Personel personel)
+        {
+            int rows;
+            using (SqlConnection con = new SqlConnection(myConn))
+            {
+                con.Open();
+                using (SqlCommand com = new SqlCommand(InsertQuery, con))
+                {
+                    com.Parameters.AddWithValue("@PersonelId", personel.Id);
+                    com.Parameters.AddWithValue("@PersonelAd", personel.AdSoyad);
+                    com.Parameters.AddWithValue("@PersonelYas", personel.Yas);
+                    com.Parameters.AddWithValue("@PersonelTelefon", personel.Telefon);
+                    com.Parameters.AddWithValue("@PersonelCinsiyet", personel.Yas);
+                    rows = com.ExecuteNonQuery();
+                }
+            }
+            return (rows > 0) ? true : false;
+        }
+ 
+Adım 14: Personel Güncelleme
+
+ 
+private const string UpdateQuery = "Update Personel set AdSoyad=@PersonelAd, Yas=@PersonelYas, Telefon=@PersonelTelefon, Cinsiyet=@PersonelCinsiyet where EmpId=@PersonelId";
+ 
+        public bool UpdatePersonel(Personel personel)
+        {
+            int rows;
+            using (SqlConnection con = new SqlConnection(myConn))
+            {
+                con.Open();
+                using (SqlCommand com = new SqlCommand(UpdateQuery, con))
+                {
+                    com.Parameters.AddWithValue("@PersonelAd", personel.AdSoyad);
+                    com.Parameters.AddWithValue("@PersonelYas", personel.Yas);
+                    com.Parameters.AddWithValue("@PersonelTelefon", personel.Telefon);
+                    com.Parameters.AddWithValue("@PersonelCinsiyet", personel.Yas);
+                    com.Parameters.AddWithValue("@PersonelId", personel.Id);
+                    rows = com.ExecuteNonQuery();
+                }
+            }
+            return (rows > 0) ? true : false;
+        }
+ 
+Adım 15: Personel Silme
+
+ 
+private const string DeleteQuery = "Delete from Personel where Id=@PersonelId";
+ 
+        public bool DeletePersonel(Personel personel)
+        {
+            int rows;
+            using (SqlConnection con = new SqlConnection(myConn))
+            {
+                con.Open();
+                using (SqlCommand com = new SqlCommand(DeleteQuery, con))
+                {
+                    com.Parameters.AddWithValue("@PersonelId", personel.Id);
+                    rows = com.ExecuteNonQuery();
+                }
+            }
+            return (rows > 0) ? true : false;
+        }
+ 
+Adım 16: Personel Liste Getirme
+
+ 
+private const string SelectQuery = "Select * from Personel";
+ 
+        public DataTable GetPersonel()
+        {
+            var datatable = new DataTable();
+            using (SqlConnection con = new SqlConnection(myConn))
+            {
+                con.Open();
+                using (SqlCommand com = new SqlCommand(SelectQuery, con))
+                {
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(com))
+                    {
+                        adapter.Fill(datatable);
+                    }
+                }
+            }
+            return datatable;
+        }
+ 
+Adım 17: Personel Class’ ımız artık aşağıdaki gibi görünecektir.
+
+ 
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+ 
+namespace VeritabaniOrnek
+{
+    public class Personel
+    {
+        int _id;
+        string _adSoyad;
+        string _yas;
+        string _telefon;
+        string _cinsiyet;
+ 
+        public int Id { get => _id; set => _id = value; }
+        public string AdSoyad { get => _adSoyad; set => _adSoyad = value; }
+        public string Yas { get => _yas; set => _yas = value; }
+        public string Telefon { get => _telefon; set => _telefon = value; }
+        public string Cinsiyet { get => _cinsiyet; set => _cinsiyet = value; }
+ 
+ 
+        private static string myConn = ConfigurationManager.ConnectionStrings["connString"].ConnectionString;
+ 
+        private const string InsertQuery = "Insert Into Personel(Id, AdSoyad, Yas, Telefon, Cinsiyet) Values (@PersonelId, @PersonelAd, @PersonelYas, @PersonelTelefon, @PersonelCinsiyet)";
+ 
+        
+        public bool InsertPersonel(Personel personel)
+        {
+            int rows;
+            using (SqlConnection con = new SqlConnection(myConn))
+            {
+                con.Open();
+                using (SqlCommand com = new SqlCommand(InsertQuery, con))
+                {
+                    com.Parameters.AddWithValue("@PersonelId", personel.Id);
+                    com.Parameters.AddWithValue("@PersonelAd", personel.AdSoyad);
+                    com.Parameters.AddWithValue("@PersonelYas", personel.Yas);
+                    com.Parameters.AddWithValue("@PersonelTelefon", personel.Telefon);
+                    com.Parameters.AddWithValue("@PersonelCinsiyet", personel.Yas);
+                    rows = com.ExecuteNonQuery();
+                }
+            }
+            return (rows > 0) ? true : false;
+        }
+ 
+ 
+ 
+        private const string UpdateQuery = "Update Personel set AdSoyad=@PersonelAd, Yas=@PersonelYas, Telefon=@PersonelTelefon, Cinsiyet=@PersonelCinsiyet where EmpId=@PersonelId";
+ 
+        public bool UpdatePersonel(Personel personel)
+        {
+            int rows;
+            using (SqlConnection con = new SqlConnection(myConn))
+            {
+                con.Open();
+                using (SqlCommand com = new SqlCommand(UpdateQuery, con))
+                {
+                    com.Parameters.AddWithValue("@PersonelAd", personel.AdSoyad);
+                    com.Parameters.AddWithValue("@PersonelYas", personel.Yas);
+                    com.Parameters.AddWithValue("@PersonelTelefon", personel.Telefon);
+                    com.Parameters.AddWithValue("@PersonelCinsiyet", personel.Yas);
+                    com.Parameters.AddWithValue("@PersonelId", personel.Id);
+                    rows = com.ExecuteNonQuery();
+                }
+            }
+            return (rows > 0) ? true : false;
+        }
+ 
+ 
+        private const string DeleteQuery = "Delete from Personel where Id=@PersonelId";
+ 
+        public bool DeletePersonel(Personel personel)
+        {
+            int rows;
+            using (SqlConnection con = new SqlConnection(myConn))
+            {
+                con.Open();
+                using (SqlCommand com = new SqlCommand(DeleteQuery, con))
+                {
+                    com.Parameters.AddWithValue("@PersonelId", personel.Id);
+                    rows = com.ExecuteNonQuery();
+                }
+            }
+            return (rows > 0) ? true : false;
+        }
+ 
+ 
+        private const string SelectQuery = "Select * from Personel";
+ 
+        public DataTable GetPersonel()
+        {
+            var datatable = new DataTable();
+            using (SqlConnection con = new SqlConnection(myConn))
+            {
+                con.Open();
+                using (SqlCommand com = new SqlCommand(SelectQuery, con))
+                {
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(com))
+                    {
+                        adapter.Fill(datatable);
+                    }
+                }
+            }
+            return datatable;
+        }
+ 
+    }
+ 
+    
+ 
+ 
+}
+ 
+Artık tüm işlemleri tamamladık ve yukarıdaki yöntemleri kullanarak Personel Ekleme, Güncelleme, Silme ve Getirme işlemlerini yapabiliriz.
+
+Adım 18: Form1.cs, kullanıcı düğmeyi tıklattığında Ekle, Güncelle, Sil ve Temizle düğmesi tıklama olaylarını içerir.
+
+ 
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+ 
+namespace VeritabaniOrnek
+{
+    public partial class Form1 : Form
+    {
+        Personel personel=new Personel();
+        public Form1()
+        {
+            InitializeComponent();
+            dgwPersonel.DataSource = personel.GetPersonel();
+        }
+ 
+        private void ClearControls()
+        {
+            txtId.Text = "";
+            txtAdSoyad.Text = "";
+            txtYas.Text = "";
+            txtTelefon.Text = "";
+            cmbCinsiyet.Text = "";
+        }
+ 
+        private void btnEkle_Click(object sender, EventArgs e)
+        {
+            personel.Id=Convert.ToInt32(txtId.Text);
+            personel.AdSoyad=txtAdSoyad.Text;
+            personel.Yas=Convert.ToInt32(txtYas.Text);
+            personel.Telefon=txtTelefon.Text;
+            personel.Cinsiyet=cmbCinsiyet.SelectedItem.ToString();
+ 
+            // Personel bilgilerini veritabanına eklemek için InsertPersonel metodunu çağırın.
+            var kontrol = personel.InsertPersonel(personel);
+            // Eklenen personelleri göstermek için listeyi yenileyin
+            dgwPersonel.DataSource = personel.GetPersonel();
+            if (kontrol)
+            {
+                // Çalışan başarıyla eklendikten sonra kontrolleri temizleyin
+                ClearControls();
+                MessageBox.Show("Personel başarıyla eklendi.");
+            }
+            else
+                MessageBox.Show("Hata!!!. Lütfen tekrar deneyin...");
+ 
+        }
+ 
+        private void btnGuncelle_Click(object sender, EventArgs e)
+        {
+            personel.Id = Convert.ToInt32(txtId.Text);
+            personel.AdSoyad = txtAdSoyad.Text;
+            personel.Yas = Convert.ToInt32(txtYas.Text);
+            personel.Telefon = txtTelefon.Text;
+            personel.Cinsiyet = cmbCinsiyet.SelectedItem.ToString();
+ 
+            // Personel bilgilerini veritabanına eklemek için InsertPersonel metodunu çağırın.
+            var kontrol = personel.UpdatePersonel(personel);
+            // Eklenen personelleri göstermek için listeyi yenileyin
+            dgwPersonel.DataSource = personel.GetPersonel();
+            if (kontrol)
+            {
+                // Çalışan başarıyla eklendikten sonra kontrolleri temizleyin
+                ClearControls();
+                MessageBox.Show("Personel bilgileri başarıyla güncellendi.");
+            }
+            else
+                MessageBox.Show("Hata!!!. Lütfen tekrar deneyin...");
+        }
+ 
+        private void btnSil_Click(object sender, EventArgs e)
+        {
+            personel.Id = Convert.ToInt32(txtId.Text);
+            var kontrol=personel.DeletePersonel(personel);
+            dgwPersonel.DataSource=personel.GetPersonel();
+            if (kontrol)
+            {
+                // Çalışan başarıyla silindikten sonra kontrolleri temizleyin
+                ClearControls();
+                MessageBox.Show("Personel başarıyla silindi.");
+            }
+            else
+                MessageBox.Show("Hata!!!. Lütfen tekrar deneyin...");
+        }
+ 
+        private void btnTemizle_Click(object sender, EventArgs e)
+        {
+            ClearControls();
+        }
+ 
+        //Datagrid üzerinde tıklanan verileri ilgili textBox' lara aktarın.
+        private void dgwPersonel_CellEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            txtId.Text = dgwPersonel.CurrentRow.Cells[0].Value.ToString();
+            txtAdSoyad.Text = dgwPersonel.CurrentRow.Cells[1].Value.ToString();
+            txtYas.Text = dgwPersonel.CurrentRow.Cells[2].Value.ToString();
+            txtTelefon.Text = dgwPersonel.CurrentRow.Cells[3].Value.ToString();
+            cmbCinsiyet.Text = dgwPersonel.CurrentRow.Cells[4].Value.ToString();
+        }
+    }
+}
+ 
+
+
+
+
+
+
+
+
+
+OLE DB ACCESS İÇİN REFERANS 
+
+https://www.kodevreni.com/831-cda-veritaban%C4%B1-kullan%C4%B1m%C4%B1-oledb/
+
+Alttaki oledb access
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data.OleDb;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data.SqlClient;
+using System.Windows.Forms;
+
+namespace WindowsFormsApp3
+{ 
+    public partial class Form1 : Form
+    { 
+      
+        public Form1()
+        {
+            InitializeComponent();
+        }
+            OleDbConnection baglanti = new OleDbConnection("Provider = Microsoft.Jet.OLEDB.4.0; Data Source = ./ogrenci23.mdb");
+     //   OleDbConnection baglanti2 = new OleDbConnection("     Provider=Microsoft.Jet.OLEDB.12.0 ;Data Source = localhost; initial catalog = ogrenci23; integrated security = SSPI");
+private void Form1_Load(object sender, EventArgs e)
+     {
+
+            OleDbDataAdapter dtsadapter = new OleDbDataAdapter("select * from Bolum",baglanti );
+               DataTable  dta = new DataTable() ;
+          
+            DataSet DS = new DataSet();
+            baglanti.Open();
+
+            string query =
+                @"SELECT *  
+    FROM bolum ";
+            OleDbDataAdapter DBAdapter = new OleDbDataAdapter();
+            DBAdapter.SelectCommand = new OleDbCommand(query, baglanti);
+            DBAdapter.Fill(dta);
+
+            dataGridView1.DataSource = dta;
+             
+
+
+
+
+
+
+            //  try
+            //{
+            //        baglanti.Open();
+            //}
+            //catch (Exception hata)
+            //{
+            //   MessageBox.Show(hata.Message);
+            //  baglanti.Close();
+            //            }
+        }
+//
+
+        void baglan()
+        {
+            if (baglanti.State == System.Data.ConnectionState.Closed)
+            { baglanti.Open(); 
+            }
+            else
+            {
+                baglanti.Close();
+                baglanti.Open();
+            }
+
+        
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+           
+            {
+                baglan();
+                // baglanti.Open();
+               
+
+                OleDbCommand komut = new OleDbCommand("INSERT INTO bolum(bol_kodu,  bol_adi) VALUES ( @kol_kod,@bol_ad)", baglanti);
+                komut.Parameters.AddWithValue("@bol_kod",(textBox1.Text.Trim()));
+                komut.Parameters.AddWithValue("@bol_ad", (textBox2.Text.Trim()));
+                komut.ExecuteNonQuery();
+                komut.Dispose();
+                baglanti.Close();
+                MessageBox.Show("Kayıt Eklendi");
+
+                OleDbDataAdapter dtsadapter = new OleDbDataAdapter("select * from Bolum", baglanti);
+                DataTable dta = new DataTable();
+
+                string query =
+               @"SELECT *  
+    FROM bolum ";
+                OleDbDataAdapter DBAdapter = new OleDbDataAdapter();
+                DBAdapter.SelectCommand = new OleDbCommand(query, baglanti);
+                DBAdapter.Fill(dta);
+
+                dataGridView1.DataSource = dta;
+            }
+            
+        }
+    }
+}

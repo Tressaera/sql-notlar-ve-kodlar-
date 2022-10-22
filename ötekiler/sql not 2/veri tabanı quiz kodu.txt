@@ -1,0 +1,34 @@
+1)--alter table personel add column bolum_no varchar(10);
+
+--alter table iban add column iban varchar(10);
+
+--alter table tckimlik add column iban varchar(11);
+
+2)--primary key(bolum_no,iban,tckimlik);
+
+3)--alter table bolumler drop primary key bol_kodu;
+     alter table personel add bol_kodu varchar(10) primary key;
+
+4)--select*from personel where gorev="doktor" or gorev="hemşire" or gorev="hasta bakıcı";
+
+5)--select count(hasta_no),ot_ili from hastalar group by ot_ili;
+
+6)--insert into randevu values("101",curdate(), "01"222103225","30-04"2022");
+select*from randevu where hasta_no="101" and ran_tar="20/04/2022";
+
+7)--update randevu set randevu_tar=curdate()+10;
+
+8)--update randevu set kontrol_tar=curdate()+14;
+
+9)select hasta_no,hastalar.adi,soyadi,bol.adi,randevu_tar,personel.pers_no,kontrol_tar
+from personel,hastalar,randevu,bolumler
+where randevu_tar=curdate()+1 and personel.pers_no
+and randevu.bolum_no=bolumler.bol_kodu
+and hastalar.hasta_no=randevu.hasta_no;
+
+11)update maaslar set maaslar=1500 where pers_no="101" and where maas_tar=curdate();
+
+13)--a)select count(*)from personel where gorev="doktor" and  avg(netucret)>7000 from maaslar
+       b)select year top 10(maas) from maaslar where gorev="doktor" from personel;
+
+

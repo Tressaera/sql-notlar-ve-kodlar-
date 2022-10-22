@@ -1,0 +1,276 @@
+sql
+
+
+
+personel tablosundaki verileri görmek için
+
+select * from personel;
+
+personel tablosundaki kiþilerin adýný 
+görmek için
+
+select ad from personel;
+
+
+personel tablosundaki kiþilerin 
+adýnýve soyadýný 
+görmek için
+
+SELECT  ad,soyad  from personel;
+
+
+personel tablosundaki kiþilerin 
+adýnýve soyadýný  birleþtirerek
+görmek için
+
+
+SELECT  ad+" "+soyad  from personel;
+
+
+personel tablosundaki kiþilerin 
+adýnýve soyadýný  birleþtirip
+takma isim altýnda (adýsoyadý) 
+görmek için
+
+
+SELECT  ad+" "+soyad  
+as adýsoyadý from personel;
+
+
+
+ada göre tekrarsýz olarak listeliyor
+
+
+SELECT distinct ad from personel;
+
+
+
+koþullu sorgulama
+
+adý serkan olan personeli lsiteleyin
+
+select * from personel where ad ="serkan";
+
+
+
+maaþý 3000 ile 10000 arasýnda 
+olan personeli listeleyin
+
+select * from personel where maas 
+between 3000 and 10000;
+
+
+maas>=3000 and maas <=10000;
+
+
+like
+
+* (%)  birçok karekterlerin yerine geçiyor
+  
+?(_) tek bir karekterin yerine geçiyor
+
+adý s ile baþlayan personeli listeleyin
+
+select * from personel where  
+ad like "s*";
+
+adý s ile baþlayýp adý 5 
+harfli personeli listeleyin
+
+select * from personel where  
+ad like "s????";
+
+adý serkan ve sevgi olan 
+ personeli listeleyin
+
+select * from personel where 
+ad in ("serkan","sevgi");
+
+
+adý sevgi ve serap olan 
+ personeli listeleyin
+
+// hatalý sorgu
+
+select * from personel where 
+ad="serap"and ad="sevgi" and ad ="serkan";
+
+
+adý sevgi veya serap olan 
+ personeli listeleyin
+
+
+
+select * from personel where 
+ad="serap"or ad="sevgi" or ad ="serkan";
+
+adý serap olmayan personeli listeleyin
+select * from personel where 
+not ad="serap";
+
+
+null boþ
+maaþ alaný boþ olan kaytýlarý listeleyin
+
+select * from personel where 
+maas is null;
+
+maaþ alaný boþ olmayan kaytýlarý listeleyin
+
+select * from personel where 
+maas is not null;
+
+
+personeli ada göre artan 
+sýrada(adan zye) listele
+
+select * from personel 
+order by ad asc ;
+
+personeli ada göre azalan 
+sýrada(zden aya) listele
+
+select * from personel 
+order by ad desc ;
+
+
+tabloya veri giriþi
+
+serkan akan sicil numarasý556   
+maaþý 50000 olan kaydý ekleyin
+
+
+insert into personel (sicilno, ad,soyad,maas)
+values ("556","serkan","akan",50000);
+
+tüm personelin maasþýna %10 zam yapalým
+
+update personel set maas=maas*1.10;
+
+adý serkanolan
+ personelin maasþýna %10 zam yapalým
+
+update personel set maas=maas*1.10 where
+ad="serkan";
+
+
+delete
+
+
+sicil numarasý 658 olan personeli siliniz
+
+delete from personel where sicilno="658";
+
+
+tüm kayýlarý siilin
+
+
+delete from personel ;
+
+en yüksek maaþ alan personel
+
+select max(maas) from personel;
+
+
+en düþük maaþ alan personel
+
+select min(maas) from personel;
+
+ortalama maaþ
+
+select avg(maas) from personel;
+
+kaç kiþiye maaþ ödeyecðim
+
+select count(maas) from personel;
+
+toplam ne kadar maaþ ödeyeceðim
+
+select sum(maas) from personel;
+
+iç içe sorgu giriþ
+
+en yüksek maas alan personelden 
+daha az maaþ alanlar 
+
+select* from personel where
+maas<  (select max(maas) from personel);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

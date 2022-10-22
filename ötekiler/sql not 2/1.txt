@@ -1,0 +1,20 @@
+create database vize;
+use vize;
+
+create table personel(
+pers_no varchar(8),
+adi varchar(20),
+soyadi varchar(50),
+tel varchar(11),
+gorevi varchar(20),
+bransi varchar(20));
+insert into randevu values("101",curdate(), "01"222103225","30-04"2022");
+
+
+update randevu set tran_tar=addate(curdate(),interval 10 day) where ran_no="101";
+
+update randevu set kontol_tar=adddate(curdate(),interval 14 day)
+where randevu_tar=curdate();
+
+select count(hasta_no),ot_ili from hastalar group by ot_ili;
+

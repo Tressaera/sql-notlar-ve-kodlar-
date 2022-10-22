@@ -1,0 +1,30 @@
+create database ogrenci;
+use ogrenci;
+create table ogrenci(
+ad varchar(35),
+soyad varchar(35));
+alter table ogrenci add column ogr_no varchar(2);
+select*from ogrenci;
+insert into ogrenci values("mert","yılmaz","11");
+create view ogrencisim as select isim from ogrenci;
+select*from ogrencisim;
+
+create table notlar(
+ogr_no varchar(3),
+not_id varchar(3));
+
+insert into ogrenci values("eymen","navdar","11");
+select*from ogrenci;
+
+insert into notlar values("10","001"),("11","002");
+insert into notlar(not_id) values("003");
+
+select isim,not_id,ogrenci.ogr_no from ogrenci,notlar
+where ogrenci.ogr_no=notlar.ogr_no;
+
+insert into ogrenci values("mert","yılmazz","12");
+select*from ogrenci;
+update ogrenci set soyisim="yılmaz"
+where ogr_no="12";
+
+set sql_safe_updates=0;

@@ -1,0 +1,533 @@
+sql nedir
+sorgulama dilidir.
+
+veritabaný nedir.
+birbiri ile ilþkili verilerin tutulduðu yer.
+
+
+primary key
+birincil anahtar
+her kayýtta bulunan ayýrt edici olan örnek
+T.C. Kimlik veya numarasý oðrenci nosu vb
+
+
+
+
+select * from personel where 
+kulladi=202151501018 and 
+pass=2564 and gk=125;
+
+
+
+personel tablosundaki verileri görmek için
+
+select * from personel;
+
+personel tablosundaki kiþilerin adýný 
+görmek için
+
+select ad from personel;
+
+
+personel tablosundaki kiþilerin 
+adýnýve soyadýný 
+görmek için
+
+SELECT  ad,soyad  from personel;
+
+
+personel tablosundaki kiþilerin 
+adýnýve soyadýný  birleþtirerek
+görmek için
+
+
+SELECT  ad+" "+soyad  from personel;
+
+
+personel tablosundaki kiþilerin 
+adýnýve soyadýný  birleþtirip
+takma isim altýnda (adýsoyadý) 
+görmek için
+
+
+SELECT  ad+" "+soyad  
+as adýsoyadý from personel;
+
+
+
+ada göre tekrarsýz olarak listeliyor
+
+
+SELECT distinct ad from personel;
+
+
+
+koþullu sorgulama
+
+adý serkan olan personeli lsiteleyin
+
+select * from personel where 
+ad ="serkan";
+
+
+
+maaþý 3000 ile 10000 arasýnda 
+olan personeli listeleyin
+
+select * from personel where 
+maas 
+between 3000 and 10000;
+
+
+maas>=3000 and maas <=10000;
+
+
+like
+
+* (%)  birçok karekterlerin yerine geçiyor
+  
+?(_) tek bir karekterin yerine geçiyor
+
+adý s ile baþlayan personeli listeleyin
+
+select * from personel where  
+ad like "s*";
+
+adý s ile baþlayýp adý 5 
+harfli personeli listeleyin
+
+select * from personel where  
+ad like "s????";
+
+adý serkan ve sevgi olan 
+ personeli listeleyin
+
+select * from personel where 
+ad in ("serkan","sevgi");
+
+
+adý sevgi ve serap olan 
+ personeli listeleyin
+
+// hatalý sorgu
+
+select * from personel where 
+ad="serap"and ad="sevgi" and 
+ad ="serkan";
+
+
+adý sevgi veya serap olan 
+ personeli listeleyin
+
+
+
+select * from personel where 
+ad="serap"or ad="sevgi" or 
+ad ="serkan";
+
+adý serap olmayan personeli listeleyin
+
+
+
+select * from personel where 
+  not ad="serap";
+
+
+null boþ
+maaþ alaný boþ olan kaytýlarý listeleyin
+
+select * from personel where 
+maas is null;
+
+maaþ alaný boþ olmayan kaytýlarý listeleyin
+
+
+
+
+select * from personel where 
+maas is not null;
+
+
+
+
+
+
+
+
+personeli ada göre artan 
+sýrada(adan zye) listele
+
+select * from personel 
+order by ad asc ;
+
+
+
+personeli ada göre azalan 
+sýrada(zden aya) listele
+
+select * from personel 
+order by ad desc ;
+
+
+
+
+
+
+
+
+
+
+
+
+tabloya veri giriþi
+
+serkan akan sicil numarasý556   
+maaþý 50000 olan kaydý ekleyin
+
+
+insert into personel 
+(sicilno, ad,soyad,maas)
+values ("556","serkan","akan"
+,50000);
+
+
+
+tüm personelin maasþýna %10 zam yapalým
+
+update personel set 
+maas=maas*1.10;
+
+adý serkanolan
+ personelin maasþýna %10 zam yapalým
+
+update personel set maas=maas*1.10 where
+ad="serkan";
+
+
+delete
+
+
+sicil numarasý 658 olan personeli siliniz
+
+delete from personel where sicilno="658";
+
+
+tüm kayýlarý siilin
+
+
+delete from personel ;
+
+
+
+
+
+
+en yüksek maaþ alan personel
+
+select max(maas) from personel;
+en düþük maaþ alan personelin adý soyadý maaþý
+
+select ad,soyad,maas from personel where maas=
+(SELECT  min(maas) from personel);
+
+en düþük maaþ alan personel
+
+select min(maas) from personel;
+
+ortalama maaþ
+
+select avg(maas) from personel;
+
+kaç kiþiye maaþ ödeyecðim
+
+select count(maas) from personel;
+
+toplam ne kadar maaþ ödeyeceðim
+
+select sum(maas) from personel;
+
+iç içe sorgu giriþ
+
+en yüksek maas alan personelden 
+daha az maaþ alanlar 
+
+select* from personel where
+maas<  
+(select max(maas) from personel);
+
+
+
+personel tablosu ile bolum tablosunu 
+inner join ile birleþtirme
+
+
+select*from personel 
+inner join bolum
+on personel.bolumid
+=bolum.bolumid;
+
+2007 den önce iþe baþlayanlar sorgusu
+
+SELECT*from personel where 
+isbastar<#01/01/2007#
+
+1)adý s ile baþlayýp 5 harfli olanlar
+
+select * from personel ad like "s????";
+
+2)maksimum maaþ ortalama maaþ minimum
+maaþ tablodaki kayýt sayýsý ve toplam 
+ödeyeceðim maaþ
+
+select max (maas) from personel;
+select min (maas) from personel;
+select avg (maas) from personel;
+select sum (maas) from personel;
+
+
+3)en yüksek maaþ alan personelin 
+adý soyadý
+
+select ad,soyad from personel
+where maas=(select max (maas) from personel);
+
+2007 den önce iþe baslayýp en yüksek maaþ 
+alan personelin ismi
+
+select ad,soyad
+from personel where 
+maas=(SELECT max (maas)
+from personel where 
+isbastar<#01/01/2007#);
+
+
+erkeklerin ve kadýnlarýn 
+ortalama maaþýný hesaplyan
+
+
+SELECT avg(maas),cinsiyet
+FROM personel
+ group by cinsiyet;
+
+
+erkeklerin ve kadýnlarýn sayýsýný hesaplyan
+
+SELECT count(*),cinsiyet
+FROM personel group by cinsiyet;
+
+kadýnlarýn ortalama maaþýndan daha
+yüksek maaþ alan erkekleri 
+listeleyin
+
+select * from personel where
+cinsiyet="erkek" and 
+maas> (select AVG(maas) from personel
+where cinsiyet="kadýn");
+
+
+
+select * from personel where
+cinsiyet="erkek" and 
+maas>(SELECT avg(maas)FROM 
+personel group by cinsiyet 
+having cinsiyet="kadýn");
+
+
+Adý Serap Olan kiþiyi Listeleme:
+
+Select * from personel where 
+Ad="Serap";
+Adý Serap olan ve maaþý 5000'den
+ büyük olanlarý listele:
+ 
+Select * from personel where
+ Ad="Serap" and maas>=5000;
+
+Bilgisayar bölümünün ort'dan yüksek
+ personeli listeleyin:
+
+select * from personel where
+ maas> 
+(Select avg(maas)from personel 
+where 
+bolum="bilgisayar")
+
+
+
+
+Bilgisayar bolumundeki ,
+personelin ort maasýndan daha 
+yuksek maas alan personel:
+ 
+select * from personel where 
+maas >( select avg 
+(personel.maas)from
+ personel inner join bolum
+on personel.bolumid=
+bolum.bolumid where
+bolum.bolumadi="bilgisayar");
+
+kadýnlardan daha yuksek
+ maas alan erkekleri listele
+
+ select * from personel where
+ cinsiyet= "erkek"and maas>
+ 
+(select max(maas) from personel
+ where
+ cinsiyet ="kadýn");
+
+Tum bolumlerin ort maasý:
+
+select avg (maas)from group by 
+ personel inner join bolum
+on personel.bolumid=
+bolum.bolumid ;
+
+Cinsiyeti kadýn olup en yüksek maaþý alan kiþi listeleme 
+SELECT max(maas)
+FROM personel
+WHERE cinsiyet="kadýn";
+
+
+Cinsiyeti erkek olup kadýnlardan daha fazla maaþ alan kiþileri listeleme
+SELECT *
+FROM personel
+WHERE cinsiyet="erkek" and maas>
+(SELECT max(maas)
+FROM personel
+WHERE cinsiyet="kadýn");
+
+
+
+Cinsiyete göre verilen toplam maaþý listeleyen sorgu
+SELECT Sum(personel.maas) AS Toplamaas, personel.cinsiyet
+FROM personel
+GROUP BY personel.cinsiyet;
+
+
+bölümlerdeki maaþlarýn ortalamasýný gösteren sorgu
+select b.bolumadi , avg(p.maas) from personel p 
+inner join bolum b on p.bolumid=b.bolumid group by b.bolumadi;
+select avg (p.maas), b.bolumadi, p.cinsiyet from personel p inner join bolum b on p.bolumid = b.bolumid group by b.bolumadi , p.cinsiyet having  p.cinsiyet="kadýn";
+
+
+
+biligisayar bölümünün 
+ortalama maaþýndan daha 
+yüksek ortalama
+maaþý olan bölümleri listeleyin
+
+select avg(p.maas),b.bolumadi from personel p inner 
+join bolum b
+on p.bolumid=b.bolumid group by b.bolumadi having 
+avg (p.maas) >
+(select avg(p.maas) from personel p inner join
+ bolum b
+on p.bolumid=b.bolumid group by b.bolumadi having 
+b.bolumadi="bilgisayar");
+
+
+
+bilgisayar bölümündeki ortalama maaþtan 
+daha yüksek ortalama maaþ alan
+bölümleri ve ortalama maaþlarýný
+listeleyen sorgu
+SELECT Avg(personel.maas), 
+bolum.bolumadi
+from personel INNER JOIN bolum ON
+ personel.bolumid = bolum.bolumid 
+where bolumadi group by
+bolum.bolumid
+having avg(maas)>
+(SELECT Avg(personel.maas)
+from personel INNER JOIN bolum ON
+personel.bolumid = bolum.bolumid
+where bolumadi = "bilgisayar");
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
